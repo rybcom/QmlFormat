@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h"/>
+  <Extern href="vsshlids.h"/>
+  <Include href="KnownImageIds.vsct"/>
+  <Include href="VSGlobals.vsct"/>
+
+  <Commands package="QmlFormat">
+    <Groups>
+      <Group guid="QmlFormat" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="VSMainMenu" id="Tools"/>
+      </Group>
+    </Groups>
+
+    <!--This section defines the elements the user can interact with, like a menu command or a button
+        or combo box in a toolbar. -->
+    <Buttons>
+      <Button guid="QmlFormat" id="FormatQMLCommand" priority="0x0100" type="Button">
+        <Parent guid="QmlFormat" id="MyMenuGroup" />
+        <Icon guid="ImageCatalogGuid" id="FormatDocument" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Format QML</ButtonText>
+          <LocCanonicalName>.QmlFormat.FormatQMLCommand</LocCanonicalName>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+
+  <Symbols>
+    <GuidSymbol name="QmlFormat" value="{44fb4db9-a43c-408b-a0f1-b06065df43a2}">
+      <IDSymbol name="MyMenuGroup" value="0x0001" />
+      <IDSymbol name="FormatQMLCommand" value="0x0100" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>
