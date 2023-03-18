@@ -2,6 +2,33 @@
 
 namespace QmlFormat
 {
+
+    internal static class Tools
+    {
+        internal static bool IsQmlFile(string filePath)
+        {
+            var extension = System.IO.Path.GetExtension(filePath);
+            return extension == ".qml";
+        }
+
+        internal static async Task RunExternalFormatAsync(string filePath)
+        {
+            try
+            {
+                var process = new System.Diagnostics.Process();
+                process.StartInfo.FileName = await OptionsHelper.GetFormatPathAsync();
+                process.StartInfo.Arguments = await OptionsHelper.GetArgsAsync(filePath);
+                process.Start();
+
+                await VS.StatusBar.ShowMessageAsync($"Qml Format applied on {filePath}");
+            }
+            catch (Exception ex)
+            {
+                await VS.MessageBox.ShowErrorAsync("qmlformat error", ex.Message);
+            }
+        }
+    }
+
     internal static class OptionsHelper
     {
         public async static Task<string> GetArgsAsync(string filePath)
@@ -43,18 +70,18 @@ namespace QmlFormat
                 var filePath = docView.FilePath;
                 if (filePath != null)
                 {
-                    try
+                    // run qml format only for .qml files
+                    if (!Tools.IsQmlFile(filePath))
                     {
-                        var process = new System.Diagnostics.Process();
-                        process.StartInfo.FileName = await OptionsHelper.GetFormatPathAsync();
-                        process.StartInfo.Arguments = await OptionsHelper.GetArgsAsync(filePath);
-                        process.Start();
-                    }
-                    catch (Exception ex)
-                    {
-                        await VS.MessageBox.ShowErrorAsync("qmlformat error", ex.Message);
+                        await VS.StatusBar.ShowMessageAsync(
+                            $"QML Format : File {filePath} is not supported. Only .qml files are supported.");
+                        return;
                     }
 
+                    // save the file before formatting due to external upcoming changes
+                    docView.Document.Save();
+
+                    await Tools.RunExternalFormatAsync(filePath);
                 }
             }
         }
